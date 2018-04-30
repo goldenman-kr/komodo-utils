@@ -48,7 +48,7 @@ int main() {
     reader.parse(jsonOutput, obj); // Reader can also read strings
 
     int size = obj["transactions"].size();
-    int i=0;
+    int i=0, j=1;
 
     double total = 0;
 
@@ -65,9 +65,10 @@ int main() {
         double amountIn = obj["transactions"][i]["amount"].asDouble();;
         string hash = obj["transactions"][i]["blockhash"].asString();
 
-        cout << i + 1 << " - blockHash : " << hash << "\tAmount : " << amountIn << endl;
+        cout << j << " - blockHash : " << hash << "\tAmount : " << amountIn << endl;
             
         total += amountIn;
+		j++;
     }
 
     cout << "Total : " << total << endl;
