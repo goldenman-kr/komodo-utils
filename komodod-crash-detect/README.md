@@ -39,3 +39,7 @@ And add below at the end of editor
 This will run shell every 5 minute. You can edit interval to check daemon crash.
 
 
+### 3. check log file
+
+You can see logs of scheduled shell from `check_komodo.log` file.
+Please delete regularly to secure storage.
