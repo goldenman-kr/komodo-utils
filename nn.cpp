@@ -58,15 +58,15 @@ int main() {
     for (i=0; i< size; i++)
     {
         if (obj["transactions"][i]["generated"].asBool() == false) {
-				    cout << "generated : false" << endl;
-				    continue;
-			  }
+            // cout << "generated : false" << endl;
+            continue;
+        }
 
         double amountIn = obj["transactions"][i]["amount"].asDouble();;
-	  		string hash = obj["transactions"][i]["blockhash"].asString();
+        string hash = obj["transactions"][i]["blockhash"].asString();
 
-		  	cout << i + 1 << " - blockHash : " << hash << "\tAmount : " << amountIn << endl;
-			
+        cout << i + 1 << " - blockHash : " << hash << "\tAmount : " << amountIn << endl;
+            
         total += amountIn;
     }
 
