@@ -20,6 +20,10 @@ echo "$dt - result = $psresult - NG"
 echo "$dt - re-run komodo daemon"
 fi
 ```
+```
+$ chmod +x check_komodo.sh
+```
+
 This shell will check komodod process is on process list and if not exist, call `~/start` to re-run daemon.
 
 
