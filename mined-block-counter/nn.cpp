@@ -44,6 +44,8 @@ int main() {
     Json::Reader reader;
     Json::Value obj;
 
+    cout << "Loading blockchain info...please wait..." << endl;
+	
     string jsonOutput = myExec("~/komodo/src/komodo-cli listsinceblock 01d2c8f63c0c4b0da415a928a94f05b8c1a6070d092e3800ab8bbb37f36b842d"); // since block 814000
     reader.parse(jsonOutput, obj); // Reader can also read strings
 
@@ -68,7 +70,7 @@ int main() {
         cout << j << " - blockHash : " << hash << "\tAmount : " << amountIn << endl;
             
         total += amountIn;
-		j++;
+	j++;
     }
 
     cout << "Total : " << total << endl;
