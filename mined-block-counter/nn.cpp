@@ -5,7 +5,7 @@
  * 
  * how to compile : 
  * $ g++ -o exefileName sourceFile.cpp -ljsoncpp
- * ex) $ g++ -o nodeMined nn.cpp -ljsoncpp
+ * ex) $ g++ -o nodeMined minedBlockCounter.cpp -ljsoncpp
  * 
  * how to run
  * $ ./nodeMined
@@ -28,9 +28,9 @@ using namespace std;
 /*
 template<template <typename> class P = std::less >
 struct sortMapByValue {
-	template<class T1, class T2> bool operator()(const std::pair<T1, T2>&left, const std::pair<T1, T2>&right) {
-		return P<T2>()(left.second, right.second);
-	}
+    template<class T1, class T2> bool operator()(const std::pair<T1, T2>&left, const std::pair<T1, T2>&right) {
+        return P<T2>()(left.second, right.second);
+    }
 };
 */
 
@@ -56,7 +56,7 @@ int getHeight(string hash) {
     int height = 0;
     
     string cmd = "~/komodo/src/komodo-cli getblock " + hash;
-    string jsonOutput = myExec(cmd.c_str()); // since block 814000
+    string jsonOutput = myExec(cmd.c_str());
     
     Json::Reader reader;
     Json::Value obj;
@@ -72,24 +72,25 @@ int main() {
     Json::Value obj;
 
     cout << "Loading blockchain info...please wait..." << endl;
-	
+    
     string jsonOutput = myExec("~/komodo/src/komodo-cli listsinceblock 01d2c8f63c0c4b0da415a928a94f05b8c1a6070d092e3800ab8bbb37f36b842d"); // since block 814000
     reader.parse(jsonOutput, obj); // Reader can also read strings
 
     int size = obj["transactions"].size();
-    int i=0, j=1;
+    int i=0, j=0;
 
     double total = 0;
+    int lastBlock = getHeight(obj["lastblock"].asString());
 
-    map<int, double> my_map;
-	
+    map<int, double> my_map; // height, amount
+    
     cout << fixed;
     cout.precision(8);
-	
+    
     cout << "---------------------------------------------" << endl;
-    cout << "num\t" << "Height\t" << "Amount" << endl;
+    cout << "num\t" << "Amount\t" << "Height" << endl;
     cout << "---------------------------------------------" << endl;
-	
+    
     for (i=0; i< size; i++)
     {
         if (obj["transactions"][i]["generated"].asBool() == false) {
@@ -103,22 +104,31 @@ int main() {
 
         my_map[height] = amountIn;
         
-        //cout << j << " - blockHash : " << hash << "\tAmount : " << amountIn << endl;
-        //cout << j << "\t" << height << "\t" << amountIn << endl;
-            
         total += amountIn;
-		j++;
+        j++;
     }
 
-    vector<pair<int, double> > my_vector(my_map.begin(), my_map.end());
+    vector<pair<int, double> > my_vector(my_map.begin(), my_map.end()); // height, amount
     //sort(my_vector.begin(), my_vector.end(), sortMapByValue<less>());    
     
-    for (i=0; i < j-1; i++) {
-        cout << i+1 << "\t" << my_vector[i].first << "\t" <<  my_vector[i].second << endl;
+    for (i=0; i < j; i++) {
+        if (i > 0) {
+            int sub = my_vector[i].first - my_vector[i-1].first;
+            cout << i+1 << "\t" << my_vector[i].second << "\t" <<  my_vector[i].first << " (+" << sub << ")" << endl;
+
+        } else {
+            cout << i+1 << "\t" << my_vector[i].second << "\t" <<  my_vector[i].first << endl;
+        }
     }
 
+    int average = (my_vector[j-2].first - my_vector[0].first) / (j-1);
+    int nextTarget = my_vector[j-1].first + average;
+    
     cout << "---------------------------------------------" << endl;
-    cout << "Total : " << total << endl;
+    cout << "Total : " << total << " KMD" << " (avrg interval : " << average << ")" << endl;
+    cout << "Cur last block : " << lastBlock <<  endl;
+    cout << "Est next block : " << nextTarget << " (" << nextTarget - lastBlock << " left)" << endl;
     cout << "---------------------------------------------" << endl;
+    cout << myExec("date") << endl;
     return 1;
 }
