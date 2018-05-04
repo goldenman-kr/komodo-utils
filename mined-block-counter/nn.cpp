@@ -108,9 +108,9 @@ int main() {
     cout << fixed;
     cout.precision(8);
     
-    cout << "---------------------------------------------" << endl;
-    cout << "num\t" << "Time(M)\t" << "Amount\t\t" << "Height" << endl;
-    cout << "---------------------------------------------" << endl;
+    cout << "--------------------------------------------------------" << endl;
+    cout << "num\t" << "Amount\t\t" << "Height" << "\t\tTime Interval(M)" << endl;
+    cout << "--------------------------------------------------------" << endl;
     
     for (i=0; i< size; i++)
     {
@@ -148,10 +148,10 @@ int main() {
             Block prevBlock = my_vector[i-1].second;
             int timesub = (block.blockTime - prevBlock.blockTime) / 60;
             //string time = getTimeStr(timesub);
-            cout << i+1 << "\t+" << timesub << "\t" << amount << "\t" <<  my_vector[i].first << " (+" << sub << ")" << endl;
+            cout << i+1 << "\t" << amount << "\t" <<  my_vector[i].first << " (+" << sub << ")\t" << timesub << endl;
 
         } else {
-            cout << i+1 << "\t" << "----" << "\t" << amount << "\t" <<  my_vector[i].first << endl;
+            cout << i+1 << "\t" << amount << "\t" <<  my_vector[i].first << "\t-----" << endl;
         }
     }
 
@@ -163,15 +163,16 @@ int main() {
     int last = lastblock.blockTime;
     
     
-    cout << "---------------------------------------------" << endl;
+    cout << "--------------------------------------------------------" << endl;
     cout << "Total : " << total << " KMD" << " (avrg interval : " << average << ")" << endl;
+    cout << "--------------------------------------------------------" << endl;
     cout << "Cur last block : " << lastBlock <<  endl;
     cout << "Est next block : " << nextTarget << " (" << nextTarget - lastBlock << " left)" << endl;
-    cout << "---------------------------------------------" << endl;
-    cout << "Time mined : " << getTimeStr(last) << " (-" << (now-last)/60 << " mins)" << endl;
+    cout << "--------------------------------------------------------" << endl;
+    cout << "Time mined : " << getTimeStr(last) <<  " (-" << (now-last)/60 << " mins)" << endl;
     cout << "Time curr  : " << getTimeStr(now) << endl;
-    cout << "---------------------------------------------" << endl;
-    cout << myExec("date") << endl;
+    cout << "--------------------------------------------------------" << endl;
+
     return 1;
 }
 
