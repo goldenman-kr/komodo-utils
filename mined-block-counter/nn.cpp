@@ -139,6 +139,8 @@ int main() {
     vector<pair<int, Block> > my_vector(my_map.begin(), my_map.end()); // height, amount
     //sort(my_vector.begin(), my_vector.end(), sortMapByValue<less>());    
     
+    int sumTime = 0;
+    
     for (i=0; i < j; i++) {
         Block block = my_vector[i].second;
         double amount = block.amount;
@@ -147,6 +149,7 @@ int main() {
             int sub = my_vector[i].first - my_vector[i-1].first;
             Block prevBlock = my_vector[i-1].second;
             int timesub = (block.blockTime - prevBlock.blockTime) / 60;
+            sumTime += timesub;
             //string time = getTimeStr(timesub);
             cout << i+1 << "\t" << amount << "\t" <<  my_vector[i].first << " (+" << sub << ")\t" << timesub << endl;
 
@@ -161,7 +164,7 @@ int main() {
     int now = time(NULL);
     Block lastblock = my_vector[j-1].second;
     int last = lastblock.blockTime;
-    
+    double minedPerHour = total / sumTime * 60;
     
     cout << "--------------------------------------------------------" << endl;
     cout << "Total : " << total << " KMD" << " (avrg interval : " << average << ")" << endl;
@@ -172,7 +175,10 @@ int main() {
     cout << "Time mined : " << getTimeStr(last) <<  " (-" << (now-last)/60 << " mins)" << endl;
     cout << "Time curr  : " << getTimeStr(now) << endl;
     cout << "--------------------------------------------------------" << endl;
-
+    cout << "Mined per Hour : " << minedPerHour << " KMD" << endl;
+    cout << "Mined per Day  : " << minedPerHour * 24 << " KMD" << endl;
+    cout << "--------------------------------------------------------" << endl;
+    
     return 1;
 }
 
