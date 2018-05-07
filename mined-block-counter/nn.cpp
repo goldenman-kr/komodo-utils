@@ -8,7 +8,8 @@
  * ex) $ g++ -o nodeMined minedBlockCounter.cpp -ljsoncpp
  * 
  * how to run
- * $ ./nodeMined
+ * $ ./nodeMined [numOfList]
+ * ex) $ ./nodeMined 50 <- Display last 50 mined blocks (default 25)
  */
 
 #include <iostream>
@@ -87,12 +88,18 @@ string getTimeStr(int timestamp) {
     return buffer;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+
+    int numList = 25;
+    
+    if (argc > 1) {
+        numList = atoi(argv[1]);
+    }
 
     Json::Reader reader;
     Json::Value obj;
 
-    cout << "Loading blockchain info...please wait..." << endl;
+    cout << "Loading blockchain info...please wait...(" << numList << ")" << endl;
     
     string jsonOutput = myExec("~/komodo/src/komodo-cli listsinceblock 01d2c8f63c0c4b0da415a928a94f05b8c1a6070d092e3800ab8bbb37f36b842d"); // since block 814000
     reader.parse(jsonOutput, obj); // Reader can also read strings
@@ -151,7 +158,9 @@ int main() {
             int timesub = (block.blockTime - prevBlock.blockTime) / 60;
             sumTime += timesub;
             //string time = getTimeStr(timesub);
-            cout << i+1 << "\t" << amount << "\t" <<  my_vector[i].first << " (+" << sub << ")\t" << timesub << endl;
+            if (j - i <= numList) {
+                cout << i+1 << "\t" << amount << "\t" <<  my_vector[i].first << " (+" << sub << ")\t" << timesub << endl;
+            }
 
         } else {
             cout << i+1 << "\t" << amount << "\t" <<  my_vector[i].first << "\t-----" << endl;
@@ -172,11 +181,12 @@ int main() {
     cout << "Cur last block : " << lastBlock <<  endl;
     cout << "Est next block : " << nextTarget << " (" << nextTarget - lastBlock << " left)" << endl;
     cout << "--------------------------------------------------------" << endl;
-    cout << "Time mined : " << getTimeStr(last) <<  " (-" << (now-last)/60 << " mins)" << endl;
-    cout << "Time curr  : " << getTimeStr(now) << endl;
+    cout << "Last mined : " << getTimeStr(last) <<  " (-" << (now-last)/60 << " mins)" << endl;
+    cout << "Curr Time  : " << getTimeStr(now) << endl;
     cout << "--------------------------------------------------------" << endl;
     cout << "Mined per Hour : " << minedPerHour << " KMD" << endl;
     cout << "Mined per Day  : " << minedPerHour * 24 << " KMD" << endl;
+    cout << "Mined per Month : " << minedPerHour * 24 * 365 / 12 << " KMD" << endl;
     cout << "--------------------------------------------------------" << endl;
     
     return 1;
