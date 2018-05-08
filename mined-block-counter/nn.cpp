@@ -107,7 +107,7 @@ int main() {
     
     cout << fixed;
     cout.precision(8);
-    
+
     cout << "--------------------------------------------------------" << endl;
     cout << "num\t" << "Amount\t\t" << "Height" << "\t\tTime Interval(M)" << endl;
     cout << "--------------------------------------------------------" << endl;
@@ -141,9 +141,13 @@ int main() {
     
     int sumTime = 0;
     
+    double largestAmount = 0;
     for (i=0; i < j; i++) {
         Block block = my_vector[i].second;
         double amount = block.amount;
+	if (amount > largestAmount) {
+		largestAmount = amount;
+	}
         
         if (i > 0) {
             int sub = my_vector[i].first - my_vector[i-1].first;
@@ -167,7 +171,9 @@ int main() {
     double minedPerHour = total / sumTime * 60;
     
     cout << "--------------------------------------------------------" << endl;
-    cout << "Total : " << total << " KMD" << " (avrg interval : " << average << ")" << endl;
+    cout << "Largest: " << largestAmount << " KMD" << endl;
+    cout << "Average: " << (total / j) << " KMD" << endl;
+    cout << "Total  : " << total << " KMD" << " (avrg interval : " << average << ")" << endl;
     cout << "--------------------------------------------------------" << endl;
     cout << "Cur last block : " << lastBlock <<  endl;
     cout << "Est next block : " << nextTarget << " (" << nextTarget - lastBlock << " left)" << endl;
