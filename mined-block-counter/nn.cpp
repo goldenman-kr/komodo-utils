@@ -46,6 +46,7 @@ struct Block
 string myExec(const char* cmd) {
     char buffer[512];
     std::string result = "";
+    
     FILE* pipe = popen(cmd, "r");
     if (!pipe) throw std::runtime_error("popen() failed!");
     try {
@@ -92,8 +93,19 @@ int main(int argc, char *argv[]) {
 
     int numList = 25;
 
+    string sinceBlockHash = "01d2c8f63c0c4b0da415a928a94f05b8c1a6070d092e3800ab8bbb37f36b842d"; // default 814000
+    
     if (argc > 1) {
         numList = atoi(argv[1]);
+        if (numList <= 0) {
+            numList = 25;
+        }
+        
+        if (argc > 2) {
+            string sinceBlockHeight = argv[2];
+            string cmdTemp = "~/komodo/src/komodo-cli getblockhash " + sinceBlockHeight;
+            sinceBlockHash = myExec(cmdTemp.c_str());
+        }
     }
 
     Json::Reader reader;
@@ -101,7 +113,8 @@ int main(int argc, char *argv[]) {
 
     cout << "Loading blockchain info...please wait...(numOfList:" << numList << ")" << endl;
 
-    string jsonOutput = myExec("~/komodo/src/komodo-cli listsinceblock 01d2c8f63c0c4b0da415a928a94f05b8c1a6070d092e3800ab8bbb37f36b842d"); // since block 814000
+    string cmdExec = "~/komodo/src/komodo-cli listsinceblock " + sinceBlockHash;
+    string jsonOutput = myExec(cmdExec.c_str()); // since block 814000
     reader.parse(jsonOutput, obj); // Reader can also read strings
 
     int size = obj["transactions"].size();
@@ -118,7 +131,7 @@ int main(int argc, char *argv[]) {
     cout << "--------------------------------------------------------" << endl;
     cout << "num\t" << "Amount\t\t" << "Height" << "\t\tTime Interval(M)" << endl;
     cout << "--------------------------------------------------------" << endl;
-
+    
     for (i=0; i< size; i++)
     {
         if (obj["transactions"][i]["generated"].asBool() == false) {
@@ -167,7 +180,7 @@ int main(int argc, char *argv[]) {
             }
 
         } else {
-            cout << i+1 << "\t" << amount << "\t" <<  my_vector[i].first << "\t-----" << endl;
+            cout << i+1 << "\t" << amount << "\t" <<  my_vector[i].first << " (0)" << endl;
         }
     }
 
@@ -193,11 +206,12 @@ int main(int argc, char *argv[]) {
     cout << "Last mined : " << getTimeStr(last) <<  " (-" << (now-last)/60 << " mins)" << endl;
     cout << "Curr Time  : " << getTimeStr(now) << endl;
     cout << "--------------------------------------------------------" << endl;
-    cout << "Mined per Hour : " << minedPerHour << " KMD" << endl;
-    cout << "Mined per Day  : " << minedPerHour * 24 << " KMD" << endl;
+    cout << "Mined per Hour  : " << minedPerHour << " KMD" << endl;
+    cout << "Mined per Day   : " << minedPerHour * 24 << " KMD" << endl;
     cout << "Mined per Month : " << minedPerHour * 24 * 365 / 12 << " KMD" << endl;
     cout << "--------------------------------------------------------" << endl;
-
+    cout << endl;
+    
     return 1;
 }
 
